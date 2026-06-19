@@ -3,12 +3,15 @@ import { useAuth } from "../context/AuthContext";
 import {
   LayoutDashboard, Users, Building2, FileText, Truck, Package,
   ClipboardList, CalendarDays, BarChart3, UserCog, LogOut, HardHat,
+  Kanban, GanttChartSquare,
 } from "lucide-react";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "vendedor", "supervisor"] },
   { to: "/clientes", label: "Clientes", icon: Users, roles: ["admin", "vendedor", "supervisor"] },
+  { to: "/pipeline", label: "Pipeline", icon: Kanban, roles: ["admin", "vendedor", "supervisor"] },
   { to: "/proyectos", label: "Obras", icon: Building2, roles: ["admin", "vendedor", "supervisor"] },
+  { to: "/gantt", label: "Gantt", icon: GanttChartSquare, roles: ["admin", "vendedor", "supervisor"] },
   { to: "/cotizaciones", label: "Cotizaciones", icon: FileText, roles: ["admin", "vendedor", "supervisor"] },
   { to: "/proveedores", label: "Proveedores", icon: Truck, roles: ["admin", "vendedor", "supervisor"] },
   { to: "/insumos", label: "Insumos", icon: Package, roles: ["admin", "vendedor", "supervisor"] },

@@ -5,9 +5,13 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword, { ResetPassword } from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
+import Pipeline from "./pages/Pipeline";
 import Projects from "./pages/Projects";
+import Gantt from "./pages/Gantt";
 import Quotes from "./pages/Quotes";
 import Suppliers from "./pages/Suppliers";
 import Materials from "./pages/Materials";
@@ -26,6 +30,9 @@ function App() {
           }} />
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               element={
                 <ProtectedRoute>
@@ -35,7 +42,9 @@ function App() {
             >
               <Route path="/" element={<Dashboard />} />
               <Route path="/clientes" element={<Clients />} />
+              <Route path="/pipeline" element={<Pipeline />} />
               <Route path="/proyectos" element={<Projects />} />
+              <Route path="/gantt" element={<Gantt />} />
               <Route path="/cotizaciones" element={<Quotes />} />
               <Route path="/proveedores" element={<Suppliers />} />
               <Route path="/insumos" element={<Materials />} />

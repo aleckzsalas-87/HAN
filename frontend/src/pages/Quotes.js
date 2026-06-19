@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import api, { formatApiError } from "../lib/api";
 import PageHeader from "../components/PageHeader";
 import Modal from "../components/Modal";
-import { Plus, Trash2, FileText, Eye } from "lucide-react";
+import { Plus, Trash2, FileText, Eye, FileDown } from "lucide-react";
 import { toast } from "sonner";
+import { exportQuotePDF } from "../lib/pdf";
 
 const STATUSES = [
   { v: "borrador", label: "Borrador", color: "#52525B" },
@@ -25,11 +26,12 @@ export default function Quotes() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [company, setCompany] = useState({});
 
   const load = async () => {
     try {
-      const [q, c, p] = await Promise.all([api.get("/quotes"), api.get("/clients"), api.get("/projects")]);
-      setItems(q.data); setClients(c.data); setProjects(p.data);
+      const [q, c, p, comp] = await Promise.all([api.get("/quotes"), api.get("/clients"), api.get("/projects"), api.get("/company").catch(() => ({ data: {} }))]);
+      setItems(q.data); setClients(c.data); setProjects(p.data); setCompany(comp.data || {});
     } catch (e) { toast.error(formatApiError(e)); }
   };
   useEffect(() => { load(); }, []);
@@ -109,8 +111,9 @@ export default function Quotes() {
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => setView(q)} className="p-1 hover:bg-[#0033A0] hover:text-white border-2 border-transparent hover:border-zinc-950 mr-1"><Eye className="w-4 h-4" /></button>
-                    <button onClick={() => remove(q)} className="p-1 hover:bg-[#D32F2F] hover:text-white border-2 border-transparent hover:border-zinc-950"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => setView(q)} className="p-1 hover:bg-[#0033A0] hover:text-white border-2 border-transparent hover:border-zinc-950 mr-1" title="Ver"><Eye className="w-4 h-4" /></button>
+                    <button onClick={() => exportQuotePDF(q, company)} data-testid={`pdf-quote-${q.id}`} className="p-1 hover:bg-[#FF4500] hover:text-white border-2 border-transparent hover:border-zinc-950 mr-1" title="Exportar PDF"><FileDown className="w-4 h-4" /></button>
+                    <button onClick={() => remove(q)} className="p-1 hover:bg-[#D32F2F] hover:text-white border-2 border-transparent hover:border-zinc-950" title="Eliminar"><Trash2 className="w-4 h-4" /></button>
                   </td>
                 </tr>
               ))}
@@ -173,7 +176,10 @@ export default function Quotes() {
         </form>
       </Modal>
 
-      <Modal open={!!view} onClose={() => setView(null)} title={view ? `Cotización ${view.number}` : ""} size="lg">
+      <Modal open={!!view} onClose={() => setView(null)} title={view ? `Cotización ${view.number}` : ""} size="lg"
+        footer={view && <>
+          <button onClick={() => exportQuotePDF(view, company)} data-testid="view-pdf-btn" className="brutal-btn-primary"><FileDown className="w-4 h-4" /> Descargar PDF</button>
+        </>}>
         {view && (
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">

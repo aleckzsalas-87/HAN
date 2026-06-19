@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import api, { formatApiError } from "../lib/api";
 import PageHeader from "../components/PageHeader";
 import Modal from "../components/Modal";
-import { Plus, Edit, Trash2, Building2, MapPin } from "lucide-react";
+import { Plus, Edit, Trash2, Building2, MapPin, Layers, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
+import ProjectAttachments from "../components/ProjectAttachments";
 
 const STATUSES = [
   { v: "planificacion", label: "Planificación", color: "#FFB300" },
@@ -16,6 +17,7 @@ const STATUSES = [
 const emptyForm = {
   name: "", client_id: "", client_name: "", address: "", status: "planificacion",
   progress: 0, start_date: "", end_date: "", budget: 0, supervisor_id: "", description: "",
+  stages: [],
 };
 
 export default function Projects() {
@@ -41,7 +43,12 @@ export default function Projects() {
 
   const save = async (e) => {
     e.preventDefault();
-    const data = { ...form, budget: Number(form.budget) || 0, progress: Number(form.progress) || 0 };
+    const data = {
+      ...form,
+      budget: Number(form.budget) || 0,
+      progress: Number(form.progress) || 0,
+      stages: (form.stages || []).map(s => ({ ...s, progress: Number(s.progress) || 0 })),
+    };
     const client = clients.find(c => c.id === form.client_id);
     if (client) data.client_name = client.name;
     try {
@@ -51,6 +58,16 @@ export default function Projects() {
       setOpen(false); load();
     } catch (e) { toast.error(formatApiError(e)); }
   };
+
+  const addStage = () => {
+    setForm(f => ({ ...f, stages: [...(f.stages || []), { id: `s-${Date.now()}`, name: "", start_date: "", end_date: "", progress: 0, color: "#0033A0" }] }));
+  };
+  const updateStage = (i, key, val) => {
+    const next = [...(form.stages || [])];
+    next[i] = { ...next[i], [key]: val };
+    setForm({ ...form, stages: next });
+  };
+  const removeStage = (i) => setForm({ ...form, stages: form.stages.filter((_, j) => j !== i) });
 
   const remove = async (p) => {
     if (!window.confirm(`¿Eliminar obra ${p.name}?`)) return;
@@ -134,7 +151,7 @@ export default function Projects() {
         </div>
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title={editing ? "Editar Obra" : "Nueva Obra"} size="lg"
+      <Modal open={open} onClose={() => setOpen(false)} title={editing ? "Editar Obra" : "Nueva Obra"} size="xl"
         footer={<>
           <button onClick={() => setOpen(false)} className="brutal-btn-secondary">Cancelar</button>
           <button form="project-form" type="submit" data-testid="save-project" className="brutal-btn-primary">{editing ? "Actualizar" : "Crear"}</button>
@@ -164,6 +181,31 @@ export default function Projects() {
             </select>
           </F>
           <F label="Descripción" full><textarea rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="brutal-input" /></F>
+
+          <div className="md:col-span-2 border-2 border-zinc-950">
+            <div className="bg-zinc-950 text-white px-3 py-2 flex justify-between items-center">
+              <span className="label-mono text-white flex items-center gap-2"><Layers className="w-3 h-3" /> Etapas de la obra</span>
+              <button type="button" onClick={addStage} className="text-xs font-bold uppercase hover:text-[#FF4500]">+ Agregar Etapa</button>
+            </div>
+            <div className="divide-y-2 divide-zinc-200">
+              {(form.stages || []).length === 0 && <div className="p-3 text-center text-xs font-mono text-zinc-500">Sin etapas. Agrega etapas para visualizar en el Gantt.</div>}
+              {(form.stages || []).map((s, i) => (
+                <div key={i} className="grid grid-cols-12 gap-2 p-2">
+                  <input placeholder="Nombre etapa" value={s.name} onChange={e => updateStage(i, "name", e.target.value)} className="brutal-input col-span-4" required />
+                  <input type="date" value={s.start_date || ""} onChange={e => updateStage(i, "start_date", e.target.value)} className="brutal-input col-span-3" />
+                  <input type="date" value={s.end_date || ""} onChange={e => updateStage(i, "end_date", e.target.value)} className="brutal-input col-span-3" />
+                  <input type="number" min="0" max="100" value={s.progress} onChange={e => updateStage(i, "progress", e.target.value)} className="brutal-input col-span-1" placeholder="%" />
+                  <button type="button" onClick={() => removeStage(i)} className="col-span-1 brutal-btn bg-white text-[#D32F2F] hover:bg-[#D32F2F] hover:text-white"><XIcon className="w-3 h-3" /></button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {editing && (
+            <div className="md:col-span-2">
+              <ProjectAttachments projectId={editing.id} />
+            </div>
+          )}
         </form>
       </Modal>
     </div>

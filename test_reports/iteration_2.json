@@ -1,0 +1,50 @@
+{
+  "summary": "Iteration 2 tested: multi-tenant (register-company, cross-tenant isolation), password reset (forgot+reset via backend logs), file attachments (upload/list/download/delete + cross-tenant 404), requisition notify no-op, frontend Pipeline/Gantt/Register/ForgotPassword/PDF/Attachments. Backend: 35/35 pytest pass (12 new + 23 existing). Fixed 2 critical bugs: (1) backend create_user returning Mongo _id (ObjectId) causing 500, (2) frontend Quotes.js missing `company` useState causing ReferenceError on PDF button. PDF export now works (8306-byte PDF downloaded). /obras (Projects list) page found rendering blank in one run due to a 401 API call — likely an auth-state race on initial load; main agent to investigate.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/users", "issue": "FIXED — returned dict mutated by Motor insert_one with _id ObjectId; caused 500 ValueError. Changed comprehension to exclude '_id' as well as 'password_hash' in /app/backend/server.py."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Quotes.js (Cotizaciones)", "issue": "FIXED — `company` state was used (setCompany + exportQuotePDF(q, company)) but never declared via useState, causing ReferenceError: 'company is not defined' on PDF button click. Added `const [company, setCompany] = useState({});`.", "selector": "[data-testid^='pdf-quote-']", "priority": "HIGH"},
+      {"component": "Projects.js (/obras)", "issue": "Page rendered completely blank (only 'Made with Emergent' badge) in one Playwright run after successful login. Console showed 'Failed to load resource: 401'. Suggests an axios call (likely /api/auth/me or /api/projects) is racing the auth context before the JWT cookie is attached, and the page does not render any fallback/loader/error state. Other pages (/pipeline, /gantt, /cotizaciones, /forgot-password, /register) all loaded correctly in the same session.", "selector": "/obras whole page", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Project attachments UI", "issue": "Could not validate the upload-attachment flow end-to-end via UI because /obras rendered blank in the test session (no edit-project testid found). Backend attachment cycle (upload/list/download/delete + cross-tenant 404) is fully verified via pytest (TestAttachments). Main agent should verify that ProjectAttachments mounts when editing an existing project once /obras render issue is resolved.", "affected_selectors": ["[data-testid='upload-attachment']", "[data-testid*='edit-project']"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_crm.py",
+    "/app/backend/tests/test_iter2.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/app/test_reports/pytest/iter2_results.xml"
+  ],
+  "action_items": [
+    "Investigate why /obras renders blank: check Projects.js initial render — ensure it shows a loader while auth/data is loading and an error boundary if API returns 401. Likely fix: guard the initial useEffect API call until user/auth context is hydrated, OR add a try/catch that displays an empty state when projects list is empty (instead of returning null).",
+    "Add data-testid='edit-project-{id}' (or similar) on the Edit button row in Projects.js so attachment UI flows can be tested deterministically.",
+    "Consider an explicit Pydantic response_model for /auth/me and /users POST to fully eliminate _id leakage risk."
+  ],
+  "critical_code_review_comments": [
+    "create_user had the same Motor _id mutation pattern flagged in iteration 1 — that comprehension only excluded 'password_hash' but not '_id'; an actual 500 was triggered by it. Now fixed.",
+    "The Quotes.js bug (`company` not declared) shows the file was edited (added /api/company fetch + company arg to exportQuotePDF) without adding the corresponding useState — typical refactor miss. Recommend ESLint react-hooks + no-undef enforcement in CI.",
+    "/obras blank render shows the codebase lacks consistent loading/error fallback states. Recommend a top-level ErrorBoundary and a default 'loading' state in each page useEffect.",
+    "Backend asyncio.create_task(_notify_requisition_status(...)) is fire-and-forget. If send_email_safe ever throws synchronously (currently caught), exceptions are silently swallowed by event loop. Consider gathering and logging exceptions explicitly.",
+    "/api/auth/forgot-password leaks the existence of a user via timing (DB find then write) — acceptable for MVP but worth noting.",
+    "make_crud relies on closures and registers 5 routes per call — works, but harder to monkey-patch in tests; consider explicit routers per resource if complexity grows."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (excluded _id from create_user response)",
+    "/app/frontend/src/pages/Quotes.js (added missing company useState)",
+    "/app/backend/tests/test_iter2.py (new — 12 pytest tests for iter2 features)"
+  ],
+  "success_rate": {"backend": "100% (35/35 pytest, includes 12 new iter2)", "frontend": "~85% — Pipeline, Gantt, Register, ForgotPassword and PDF export verified working; /obras (Projects) renders blank intermittently which blocks UI test of project attachments and project editing."},
+  "test_credentials": "admin@crm.com/admin123, vendedor@crm.com/vendedor123, supervisor@crm.com/supervisor123 — all working. Multi-tenant register creates fresh tenants via POST /api/auth/register-company.",
+  "seed_data_creation": "Tests create multiple TEST_ companies and a few projects/clients (cleaned up inline). Backend logs contain [PWD RESET] tokens for any reset-*@test.com test users (used by test_full_reset_flow). One seed project 'Seed Proyecto UI' (id 8ac8424a-7b21-49b7-a1fa-c613174a8fbe) left in DB for manual UI verification.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run: cd /app && python -m pytest backend/tests/ -v. /obras blank-render bug needs fixing before UI attachment flow can be validated. Tests for password reset extract token from /var/log/supervisor/backend.err.log via grep -F '[PWD RESET]' — keep RESEND_API_KEY empty so the link is logged. Multi-tenant cross-isolation is asserted at /api/clients level; if extending to projects/quotes/etc. just reuse the same pattern. The create_user _id fix should be considered for create_quote and make_crud insert paths too if any new bug surfaces.",
+  "rca of the issue": "Bug A (create_user 500): Motor's insert_one(doc) mutates doc in-place, adding _id: ObjectId. The endpoint then returned {k:v for k,v in doc.items() if k != 'password_hash'} — _id was still included. FastAPI's jsonable_encoder cannot serialize ObjectId → 500. Fix: also exclude '_id' from comprehension. Bug B (PDF ReferenceError): Quotes.js calls setCompany(comp.data) in load() and references `company` in onClick, but the corresponding useState was never declared (likely lost during a refactor). Browser threw 'ReferenceError: company is not defined' on PDF button click. Fix: declared const [company, setCompany] = useState({}). Bug C (/obras blank): Not reproduced consistently; suspect axios call returning 401 before auth cookie attaches on hard navigation. Needs main agent investigation of Projects.js initial render & ProtectedRoute behavior."
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { formatApiError } from "../lib/api";
 import { HardHat, ArrowRight, Lock } from "lucide-react";
@@ -140,6 +140,11 @@ export default function Login() {
               >
                 {loading ? "Verificando..." : <>Entrar <ArrowRight className="w-4 h-4" strokeWidth={2.5} /></>}
               </button>
+
+              <div className="flex justify-between text-sm pt-2">
+                <Link to="/forgot-password" data-testid="forgot-link" className="text-zinc-600 hover:text-[#FF4500] underline">¿Olvidaste tu contraseña?</Link>
+                <Link to="/register" data-testid="register-link" className="font-bold text-[#FF4500] hover:underline">Crear empresa →</Link>
+              </div>
             </form>
 
             <div className="mt-6 border-t-2 border-zinc-200 pt-4">

@@ -1,1 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="23" time="6.948" timestamp="2026-06-19T00:44:19.581137+00:00" hostname="agent-env-25adc0bd-692d-4fd2-accf-d5a6b756cb4c"><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_admin" time="0.394" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_vendedor" time="0.324" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_supervisor" time="0.332" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_invalid" time="0.317" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_me_endpoint" time="0.419" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_me_no_token" time="0.101" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_admin_list_users" time="0.101" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_vendedor_forbidden_users" time="0.432" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_supervisor_forbidden_users" time="0.415" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_create_and_delete_user" time="0.419" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_vendedor_cannot_delete_user" time="0.524" /><testcase classname="backend.tests.test_crm.TestClients" name="test_clients_crud" time="0.587" /><testcase classname="backend.tests.test_crm.TestProjects" name="test_projects_crud" time="0.297" /><testcase classname="backend.tests.test_crm.TestSuppliers" name="test_suppliers_crud" time="0.188" /><testcase classname="backend.tests.test_crm.TestMaterials" name="test_materials_crud" time="0.199" /><testcase classname="backend.tests.test_crm.TestQuotes" name="test_quote_auto_number_and_totals" time="0.212" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_req_auto_number_and_requester" time="0.288" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_supervisor_can_approve" time="0.301" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_vendedor_cannot_approve" time="0.505" /><testcase classname="backend.tests.test_crm.TestEvents" name="test_events_crud" time="0.206" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_dashboard_stats" time="0.100" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_projects_by_status" time="0.098" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_leads_by_stage" time="0.102" /></testsuite></testsuites>
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="35" time="136.110" timestamp="2026-06-19T01:04:04.292461+00:00" hostname="agent-env-25adc0bd-692d-4fd2-accf-d5a6b756cb4c"><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_admin" time="0.373" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_vendedor" time="0.327" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_supervisor" time="0.339" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_invalid" time="15.342" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_me_endpoint" time="12.924" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_me_no_token" time="10.107" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_admin_list_users" time="0.172" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_vendedor_forbidden_users" time="15.466" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_supervisor_forbidden_users" time="0.432" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_create_and_delete_user" time="0.329"><failure message="AssertionError: Internal Server Error&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500]&gt;.status_code">backend/tests/test_crm.py:100: in test_create_and_delete_user
+    assert r.status_code == 200, r.text
+E   AssertionError: Internal Server Error
+E   assert 500 == 200
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_crm.TestUsers" name="test_vendedor_cannot_delete_user" time="0.323"><failure message="requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">/root/.venv/lib/python3.11/site-packages/requests/models.py:1116: in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/json/decoder.py:355: in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+backend/tests/test_crm.py:112: in test_vendedor_cannot_delete_user
+    uid = r.json()["id"]
+          ^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/models.py:1120: in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+E   requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)</failure></testcase><testcase classname="backend.tests.test_crm.TestClients" name="test_clients_crud" time="0.624" /><testcase classname="backend.tests.test_crm.TestProjects" name="test_projects_crud" time="0.325" /><testcase classname="backend.tests.test_crm.TestSuppliers" name="test_suppliers_crud" time="0.201" /><testcase classname="backend.tests.test_crm.TestMaterials" name="test_materials_crud" time="31.173"><failure message="requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='sitemanager-30.preview.emergentagent.com', port=443): Max retries exceeded with url: /api/materials/2787e5ee-97c0-415c-84f9-0cd0931e2b09 (Caused by ConnectTimeoutError(&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xfe69eb24e510&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=10)'))">/root/.venv/lib/python3.11/site-packages/urllib3/connection.py:204: in _new_conn
+    sock = connection.create_connection(
+/root/.venv/lib/python3.11/site-packages/urllib3/util/connection.py:85: in create_connection
+    raise err
+/root/.venv/lib/python3.11/site-packages/urllib3/util/connection.py:73: in create_connection
+    sock.connect(sa)
+E   TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:788: in urlopen
+    response = self._make_request(
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:488: in _make_request
+    raise new_e
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:464: in _make_request
+    self._validate_conn(conn)
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:1106: in _validate_conn
+    conn.connect()
+/root/.venv/lib/python3.11/site-packages/urllib3/connection.py:759: in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/urllib3/connection.py:213: in _new_conn
+    raise ConnectTimeoutError(
+E   urllib3.exceptions.ConnectTimeoutError: (&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xfe69eb24e510&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=10)')
+
+The above exception was the direct cause of the following exception:
+/root/.venv/lib/python3.11/site-packages/requests/adapters.py:696: in send
+    resp = conn.urlopen(
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:842: in urlopen
+    retries = retries.increment(
+/root/.venv/lib/python3.11/site-packages/urllib3/util/retry.py:543: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='sitemanager-30.preview.emergentagent.com', port=443): Max retries exceeded with url: /api/materials/2787e5ee-97c0-415c-84f9-0cd0931e2b09 (Caused by ConnectTimeoutError(&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xfe69eb24e510&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=10)'))
+
+During handling of the above exception, another exception occurred:
+backend/tests/test_crm.py:185: in test_materials_crud
+    requests.delete(f"{API}/materials/{mid}", headers=H(admin_token), timeout=10)
+/root/.venv/lib/python3.11/site-packages/requests/api.py:180: in delete
+    return request("delete", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/api.py:71: in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/sessions.py:651: in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/sessions.py:784: in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/adapters.py:717: in send
+    raise ConnectTimeout(e, request=request)
+E   requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='sitemanager-30.preview.emergentagent.com', port=443): Max retries exceeded with url: /api/materials/2787e5ee-97c0-415c-84f9-0cd0931e2b09 (Caused by ConnectTimeoutError(&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xfe69eb24e510&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=10)'))</failure></testcase><testcase classname="backend.tests.test_crm.TestQuotes" name="test_quote_auto_number_and_totals" time="10.353" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_req_auto_number_and_requester" time="10.359" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_supervisor_can_approve" time="2.405" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_vendedor_cannot_approve" time="0.315" /><testcase classname="backend.tests.test_crm.TestEvents" name="test_events_crud" time="0.217" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_dashboard_stats" time="0.120" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_projects_by_status" time="0.099" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_leads_by_stage" time="0.099" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_seeded_admin_has_demo_company" time="0.332" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_seeded_vendedor_supervisor_same_company" time="0.660" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_register_company_creates_admin" time="0.651" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_register_duplicate_email_rejected" time="0.097" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_cross_tenant_isolation_clients" time="16.370" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_forgot_password_returns_ok" time="0.098" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_forgot_password_unknown_email_still_ok" time="0.104" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_full_reset_flow" time="2.496" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_reset_with_invalid_token" time="0.099" /><testcase classname="backend.tests.test_iter2.TestAttachments" name="test_attachment_full_cycle" time="1.111" /><testcase classname="backend.tests.test_iter2.TestAttachments" name="test_attachment_cross_tenant_404" time="1.172" /><testcase classname="backend.tests.test_iter2.TestRequisitionNotify" name="test_approve_does_not_error_without_resend" time="0.310" /></testsuite></testsuites>
