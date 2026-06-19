@@ -110,7 +110,7 @@ export default function Materials() {
         </>}>
         <form id="mat-form" onSubmit={save} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <F label="SKU *"><input data-testid="form-sku" required value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value })} className="brutal-input" /></F>
-          <F label="Nombre *"><input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="brutal-input" /></F>
+          <F label="Nombre *"><input data-testid="form-name" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="brutal-input" /></F>
           <F label="Categoría"><input value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="brutal-input" placeholder="cemento, acero, electrico..." /></F>
           <F label="Unidad"><input value={form.unit} onChange={e => setForm({ ...form, unit: e.target.value })} className="brutal-input" placeholder="kg, m, und, ton" /></F>
           <F label="Stock"><input type="number" step="0.01" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} className="brutal-input" /></F>
