@@ -1,39 +1,30 @@
 # ConstruCRM - Product Requirements Document
 
-## Original Problem Statement
-"Quiero hacer una pagina crm enfocada a la construccion, que tenga interfaz moderna y profesional que pueda alojarla en mi propio servidor remoto con ubuntu que me recomiendas"
+## Iteration 3 (Reportes de Obras) — 2026-02-19
 
-## Iteration 2 (P1 + P2) — 2026-02-19
+### Implementado
+1. **Configuración de Empresa** (`/empresa`, admin-only):
+   - Datos fiscales: nombre, RFC/NIT/RUC, email, teléfono, dirección
+   - Subida de logo (PNG/JPG, máx 2MB) — almacenado en Emergent Object Storage
+   - Logo aparece en todos los reportes generados
+2. **Reporte individual de obra** (PDF + Excel):
+   - PDF: header con logo + datos empresa, badge de estado, barra de progreso, tabla de información, etapas detalladas, archivos adjuntos
+   - Excel: hoja "Resumen" + hoja "Etapas"
+   - Botones PDF/Excel en cada tarjeta de obra
+3. **Reporte consolidado de obras** (PDF + Excel):
+   - PDF horizontal con KPIs (total/activas/completadas/presupuesto/progreso promedio) + tabla con todas las obras y badges de estado coloreados
+   - Excel con hoja "Obras" + hoja "Etapas" (todas las etapas de todas las obras)
+   - Dropdown en header de Obras: "PDF Consolidado" / "Excel Consolidado"
+   - Respeta el filtro de estado activo (consolida solo lo filtrado)
+4. **Bibliotecas instaladas**: jspdf + jspdf-autotable (ya estaban) + `xlsx` (sheetjs) para Excel.
 
-### Implemented
-1. **PDF Cotizaciones**: client-side via jsPDF + autoTable. Botón en lista y modal de vista.
-2. **Recuperación de contraseña**: forgot-password / reset-password endpoints. Email via Resend (graceful fallback con log).
-3. **Adjuntar archivos a obras**: object storage Emergent. Upload/list/download/delete UI dentro del editor de obra.
-4. **Notificaciones por email**: cuando una requisición cambia a aprobada/rechazada/entregada.
-5. **Vista Kanban del Pipeline**: 6 columnas con drag & drop nativo. Solo admin/vendedor pueden mover.
-6. **Gantt de obras**: timeline con barras por obra + sub-rows por etapa. Cada obra puede tener etapas con nombre/fechas/progreso.
-7. **Multi-tenant completo**: `companies` collection, `company_id` en todas las colecciones, registro público de empresas en `/register`. Aislamiento estricto.
+### Backend nuevo
+- GET /api/company — accesible a todos los usuarios autenticados (necesario para reportes)
+- PUT /api/company (admin) — name, address, phone, email, rfc
+- POST /api/company/logo (admin) — multipart, valida content_type empieza con image/, máx 2MB
+- GET /api/company/logo — stream del logo binario
 
-### Backend bug fixes (testing agent)
-- Excluído `_id` del response de POST /api/users (Motor mutaba el dict con ObjectId).
-- Quotes.js — añadido `useState` para company que faltaba (causaba ReferenceError en botón PDF).
-
-### Próximos pasos sugeridos
-- P1: Envío automático del PDF de cotización por email al cliente
-- P1: Firma electrónica de cotizaciones
-- P2: Subir múltiples archivos a la vez (drag & drop)
-- P2: Bitácora de movimientos de inventario
-- P2: Vista de mapa de obras (Mapbox/Leaflet)
-- P2: App móvil PWA para supervisores
-
-## Auth & Multi-tenant
-- `demo-company` con 3 usuarios seed
-- Cualquier nuevo registro crea su propia empresa
-- Todos los queries filtran por `user.company_id`
-- Email único globalmente (constraint en DB)
-
-## Variables de entorno (.env backend)
-- `RESEND_API_KEY` (vacío por defecto, logs locales si vacío)
-- `SENDER_EMAIL` (default: onboarding@resend.dev)
-- `EMERGENT_LLM_KEY` (object storage)
-- `APP_NAME=construcrm` (namespace para archivos)
+### Testing
+- 12/12 nuevos tests pytest pasan
+- Suite total: 47 tests
+- Sin bugs encontrados en frontend ni backend
