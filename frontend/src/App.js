@@ -1,54 +1,59 @@
-import { useEffect } from "react";
-import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import { Toaster } from "sonner";
+import "./App.css";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Clients from "./pages/Clients";
+import Projects from "./pages/Projects";
+import Quotes from "./pages/Quotes";
+import Suppliers from "./pages/Suppliers";
+import Materials from "./pages/Materials";
+import Requisitions from "./pages/Requisitions";
+import CalendarPage from "./pages/CalendarPage";
+import Reports from "./pages/Reports";
+import Users from "./pages/Users";
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" toastOptions={{
+            style: { border: '2px solid #09090B', borderRadius: 0, boxShadow: '4px 4px 0px 0px rgba(9,9,11,1)', fontFamily: 'Chivo' }
+          }} />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/clientes" element={<Clients />} />
+              <Route path="/proyectos" element={<Projects />} />
+              <Route path="/cotizaciones" element={<Quotes />} />
+              <Route path="/proveedores" element={<Suppliers />} />
+              <Route path="/insumos" element={<Materials />} />
+              <Route path="/requisiciones" element={<Requisitions />} />
+              <Route path="/calendario" element={<CalendarPage />} />
+              <Route path="/reportes" element={<Reports />} />
+              <Route
+                path="/usuarios"
+                element={
+                  <ProtectedRoute roles={["admin"]}>
+                    <Users />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }

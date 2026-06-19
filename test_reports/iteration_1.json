@@ -1,0 +1,39 @@
+{
+  "summary": "Backend (23 pytest tests) and Frontend (Playwright) end-to-end tested for Construccion CRM. All 3 user roles (admin/vendedor/supervisor) authenticate correctly. Found and FIXED one critical backend bug (Quote POST returning 500 due to MongoDB mutating dict with ObjectId). After fix: 100% backend pass rate (23/23). Frontend flows for login, dashboard KPIs, sidebar, clients/projects/materials/requisitions/quotes/users creation, role-based 403 for /usuarios all work as expected.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Materials.js (Nuevo Insumo modal)", "issue": "Material name input lacks data-testid='form-name' (only SKU has data-testid). The review notes list form-name as required for tests.", "selector": "input for 'name' field in Materials modal", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_crm.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "(Optional) Add data-testid='form-name' to the Material name input in /app/frontend/src/pages/Materials.js for consistent test coverage."
+  ],
+  "critical_code_review_comments": [
+    "FIXED: Quote POST /api/quotes was returning 500 — Motor's insert_one mutates the passed dict by injecting _id (ObjectId), and the endpoint returned that same dict, causing FastAPI ValueError('ObjectId not iterable'). Fix: return a fresh q.model_dump() instead of the mutated dict. Applied in /app/backend/server.py create_quote.",
+    "Same pattern exists in create_user (line ~308) and make_crud.create_item — these currently work because they call .model_dump() or pop password_hash AFTER insert (insert mutates the original 'doc' too, but those endpoints do 'doc.pop(password_hash)' / return obj.model_dump() which is a fresh dict). Pattern is fragile; recommend always returning a fresh dict (e.g., use payload, _ = doc.copy() before insert, or call .model_dump() again).",
+    "JWT cookie uses samesite='none' + secure=True which is correct for cross-origin, but verify in production that frontend & backend are both served over HTTPS.",
+    "/api/auth/me returns user dict including unexpected fields if any added later; consider Pydantic response_model for stricter contract.",
+    "No brute-force lockout / rate limiting on /api/auth/login (review_request mentioned it but code does not implement it). If required, add a lockout-after-5-fails mechanism.",
+    "CORS allows only FRONTEND_URL + localhost — good. But CORS_ORIGINS env var defined in .env is unused.",
+    "Status update on requisitions uses query param (?status=...) instead of JSON body — works but unusual REST style.",
+    "PUT /clients (and other generic update) skips fields that are None, so clients can't clear optional fields by setting them to null."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (fixed create_quote dict mutation bug)",
+    "/app/backend/tests/test_crm.py (new — 23 pytest tests)"
+  ],
+  "success_rate": {"backend": "100% (23/23)", "frontend": "~95% (all critical flows OK; 1 minor missing data-testid)"},
+  "test_credentials": "admin@crm.com/admin123, vendedor@crm.com/vendedor123, supervisor@crm.com/supervisor123 (all confirmed working)",
+  "seed_data_creation": "Tests created and cleaned up several TEST_ prefixed records (clients, projects, materials, suppliers, events, quotes, requisitions, users). UI tests left 1 TEST Cliente UI client, 1 TEST Proyecto UI project, and 1 COT-2026-0001 quote in DB.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest suite at /app/backend/tests/test_crm.py can be re-run via: cd /app && python -m pytest backend/tests/test_crm.py -v. All endpoints already covered (auth, users, clients, projects, suppliers, materials, quotes, requisitions, events, dashboard, reports). The Quote ObjectId-mutation bug has been fixed in server.py. If similar 500s appear on other endpoints, look for the pattern: `data = obj.model_dump(); db.x.insert_one(data); return data` — must return obj.model_dump() (fresh) instead of `data`.",
+  "rca of the issue": "Quote create 500 RCA: Motor's insert_one(doc) mutates `doc` in-place adding `_id: ObjectId(...)`. The endpoint then returned that mutated dict, and FastAPI's jsonable_encoder cannot serialize ObjectId, raising ValueError('ObjectId not iterable'). Reproduction: POST /api/quotes with valid items → 500. Fix: change `data = q.model_dump(); insert_one(data); return data` → `insert_one(q.model_dump()); return q.model_dump()` (two separate fresh dicts). Verified by re-running pytest — quote test now passes and totals (subtotal=350, tax=56, total=406) are correctly computed."
+}
