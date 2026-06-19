@@ -1,0 +1,135 @@
+{
+  "theme": "LIGHT",
+  "archetype": "Archetype 4 (Swiss & High-Contrast) - Industrial Brutalism Variant",
+  "emotion": "Reliable, structured, precise, heavy-duty, modern engineering",
+  "colors": {
+    "background": {
+      "base": "#F4F4F5",
+      "surface": "#FFFFFF",
+      "inverse": "#09090B",
+      "description": "Zinc-100 (Concrete) for main app background to reduce eye strain, pure White for cards/surfaces to maximize contrast."
+    },
+    "text": {
+      "primary": "#09090B",
+      "secondary": "#52525B",
+      "inverse": "#FFFFFF",
+      "description": "Zinc-950 for stark readability. Zinc-600 for secondary data."
+    },
+    "primary": {
+      "DEFAULT": "#FF4500",
+      "hover": "#CC3700",
+      "foreground": "#FFFFFF",
+      "description": "Safety Orange for primary calls-to-action, active indicators, and high-priority metrics."
+    },
+    "secondary": {
+      "DEFAULT": "#0033A0",
+      "hover": "#002266",
+      "foreground": "#FFFFFF",
+      "description": "Blueprint Blue for secondary actions, info states, and chart accents."
+    },
+    "status": {
+      "success": "#00C853",
+      "warning": "#FFB300",
+      "error": "#D32F2F",
+      "info": "#0033A0"
+    },
+    "borders": {
+      "DEFAULT": "#09090B",
+      "subtle": "#E4E4E7",
+      "description": "Hard Zinc-950 lines (2px preferred) for structural separation. No soft grey borders for main elements."
+    }
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Cabinet Grotesk",
+      "body": "Chivo",
+      "mono": "JetBrains Mono",
+      "install_instructions": "Import these fonts via Google Fonts or Fontsource. JetBrains Mono is strictly for numbers, KPIs, and data tables."
+    },
+    "scales": {
+      "h1": "text-4xl font-black tracking-tighter uppercase",
+      "h2": "text-2xl font-bold tracking-tight",
+      "h3": "text-xl font-bold tracking-tight",
+      "body": "text-base font-normal leading-relaxed",
+      "kpi_value": "font-mono text-4xl sm:text-5xl font-bold tracking-tighter",
+      "kpi_label": "text-xs font-bold uppercase tracking-[0.1em] text-zinc-500"
+    }
+  },
+  "spacing_and_layout": {
+    "grid": "Control Room Grid. Strict grid-cols-1 md:grid-cols-3 lg:grid-cols-4 with gap-4 or gap-6. Every pixel utilized. Subgrid for inner layouts.",
+    "padding": "Generous internal padding (p-6 or p-8) for cards. Dense padding for tables.",
+    "alignment": "Optical alignment. Left-align text and data. Center only when balancing a single large KPI.",
+    "borders_and_shadows": {
+      "border_radius": "rounded-none",
+      "border_width": "border-2",
+      "border_color": "border-zinc-950",
+      "box_shadow": "shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]",
+      "hover_state": "hover:translate-x-1 hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(9,9,11,1)] transition-all",
+      "description": "Brutalist / physical card styles. No soft drop shadows. Elements should feel like heavy concrete blocks or steel plates."
+    }
+  },
+  "component_rules": {
+    "buttons": "Always rectangular (rounded-none). Primary buttons use Safety Orange with 2px black border. Secondary buttons use White background with 2px black border.",
+    "cards": "White background, border-2 border-zinc-950, solid black bottom-right drop shadow. Use strict straight lines.",
+    "inputs": "Shadcn inputs overridden with rounded-none, border-2 border-zinc-950, focus:ring-0 focus:border-orange-500.",
+    "tables": "Dense. Strict border-b-2 border-zinc-950 for headers. Monospace font for numerical data. Zebra striping with zinc-50.",
+    "badges": "Square (rounded-none). High contrast. e.g., bg-orange-500 text-white font-bold uppercase text-xs px-2 py-1.",
+    "charts": "Recharts. Use linear or step curves, NEVER smoothed/monotone. Strict geometric representation. Primary line: Safety Orange. Secondary line: Blueprint Blue."
+  },
+  "navigation": {
+    "style": "Left sidebar (Command Center format). High contrast (Zinc-950 background, white text) OR stark white with heavy 2px right border. Include prominent user avatar and active project selector."
+  },
+  "icons": {
+    "library": "lucide-react",
+    "weight": "strokeWidth={2.5}",
+    "style": "Heavy, structural, un-styled lines to match brutalist borders."
+  },
+  "motion": {
+    "hover": "Mechanical transitions. Fast and immediate (duration-150). Elements press in mechanically (translate-x-1 translate-y-1).",
+    "loaders": "Industrial loading states (e.g., repeating diagonal safety stripes moving).",
+    "accessibility": "Respect prefers-reduced-motion."
+  },
+  "media": {
+    "strategy": "Use high-contrast, desaturated photography for construction sites to match the brutalist aesthetic. Images should have a 2px black border.",
+    "image_urls": [
+      {
+        "category": "hero_or_background",
+        "url": "https://images.unsplash.com/photo-1527335988388-b40ee248d80c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjBzaXRlJTIwbW9kZXJuJTIwYXJjaGl0ZWN0dXJlfGVufDB8fHx8MTc4MTgyOTA4NHww&ixlib=rb-4.1.0&q=85",
+        "description": "Gray metal building frame. Use as a subtle background pattern or login page visual."
+      },
+      {
+        "category": "project_thumbnail_1",
+        "url": "https://images.pexels.com/photos/14989320/pexels-photo-14989320.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Dynamic architectural contrast. Use for project/obra cards."
+      },
+      {
+        "category": "project_thumbnail_2",
+        "url": "https://images.pexels.com/photos/14989321/pexels-photo-14989321.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Modern building facade. Use for project/obra cards."
+      },
+      {
+        "category": "avatar_supervisor",
+        "url": "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzR8MHwxfHNlYXJjaHwxfHxlbmdpbmVlciUyMHBvcnRyYWl0JTIwaGFyZGhhdHxlbnwwfHx8fDE3ODE4MjkwODR8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Engineer portrait. Use for user profile, assigned team, or contractor avatars."
+      },
+      {
+        "category": "document_thumbnail",
+        "url": "https://images.pexels.com/photos/4458193/pexels-photo-4458193.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Blueprint technical drawing. Use for reports, requisitions, or attachment thumbnails."
+      }
+    ]
+  },
+  "testing": {
+    "attributes": "ALL interactive elements must include data-testid. Examples: data-testid='sidebar-nav-projects', data-testid='kpi-card-active-projects', data-testid='create-quote-button'."
+  },
+  "instructions_to_main_agent": [
+    "Build the dashboard using pure React/Tailwind + Shadcn.",
+    "Override default Shadcn styles to strip out border-radius (rounded-none) and subtle shadows (shadow-sm). Apply heavy borders (border-2 border-zinc-950) and stark solid shadows (shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]).",
+    "Use Cabinet Grotesk for all headings. Use Chivo for body text. Use JetBrains Mono exclusively for numerical data (KPI values, table numbers, financial amounts).",
+    "Use a stark, brutalist aesthetic. The UI should feel like a physical command center or a heavy-duty industrial tool.",
+    "Ensure all interactive elements have strong active/focus states with Safety Orange.",
+    "Apply `data-testid` to all major sections, buttons, and form elements.",
+    "Use standard Recharts but customize strokes to be angular (type='linear'), 2px wide, and using the brand palette (Safety Orange / Blueprint Blue).",
+    "The login page should feature the 'hero_or_background' image prominently on one side with a heavy industrial login form on the other."
+  ]
+}
