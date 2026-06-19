@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="47" time="78.678" timestamp="2026-06-19T03:54:10.566327+00:00" hostname="agent-env-25adc0bd-692d-4fd2-accf-d5a6b756cb4c"><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_admin" time="0.339" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_vendedor" time="0.324" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_supervisor" time="0.318" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_login_invalid" time="0.326" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_me_endpoint" time="0.424" /><testcase classname="backend.tests.test_crm.TestAuth" name="test_me_no_token" time="0.103" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_admin_list_users" time="0.100" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_vendedor_forbidden_users" time="0.454" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_supervisor_forbidden_users" time="0.411" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_create_and_delete_user" time="0.423" /><testcase classname="backend.tests.test_crm.TestUsers" name="test_vendedor_cannot_delete_user" time="0.513" /><testcase classname="backend.tests.test_crm.TestClients" name="test_clients_crud" time="0.602" /><testcase classname="backend.tests.test_crm.TestProjects" name="test_projects_crud" time="0.309" /><testcase classname="backend.tests.test_crm.TestSuppliers" name="test_suppliers_crud" time="0.198" /><testcase classname="backend.tests.test_crm.TestMaterials" name="test_materials_crud" time="0.199" /><testcase classname="backend.tests.test_crm.TestQuotes" name="test_quote_auto_number_and_totals" time="0.213" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_req_auto_number_and_requester" time="0.289" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_supervisor_can_approve" time="0.287" /><testcase classname="backend.tests.test_crm.TestRequisitions" name="test_vendedor_cannot_approve" time="0.278" /><testcase classname="backend.tests.test_crm.TestEvents" name="test_events_crud" time="0.201" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_dashboard_stats" time="0.094" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_projects_by_status" time="0.094" /><testcase classname="backend.tests.test_crm.TestDashboard" name="test_leads_by_stage" time="0.101" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_seeded_admin_has_demo_company" time="0.312" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_seeded_vendedor_supervisor_same_company" time="0.641" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_register_company_creates_admin" time="0.635" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_register_duplicate_email_rejected" time="0.102" /><testcase classname="backend.tests.test_iter2.TestMultiTenant" name="test_cross_tenant_isolation_clients" time="1.385" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_forgot_password_returns_ok" time="0.098" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_forgot_password_unknown_email_still_ok" time="0.113" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_full_reset_flow" time="2.505" /><testcase classname="backend.tests.test_iter2.TestPasswordReset" name="test_reset_with_invalid_token" time="0.092" /><testcase classname="backend.tests.test_iter2.TestAttachments" name="test_attachment_full_cycle" time="0.990" /><testcase classname="backend.tests.test_iter2.TestAttachments" name="test_attachment_cross_tenant_404" time="1.060" /><testcase classname="backend.tests.test_iter2.TestRequisitionNotify" name="test_approve_does_not_error_without_resend" time="0.292" /><testcase classname="backend.tests.test_iter3.TestCompanyGet" name="test_get_company_admin" time="0.405" /><testcase classname="backend.tests.test_iter3.TestCompanyGet" name="test_get_company_vendedor" time="0.428" /><testcase classname="backend.tests.test_iter3.TestCompanyGet" name="test_get_company_unauth" time="0.089" /><testcase classname="backend.tests.test_iter3.TestCompanyUpdate" name="test_update_company_admin" time="0.192" /><testcase classname="backend.tests.test_iter3.TestCompanyUpdate" name="test_update_company_vendedor_forbidden" time="0.095" /><testcase classname="backend.tests.test_iter3.TestCompanyUpdate" name="test_update_company_supervisor_forbidden" time="30.343"><failure message="requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='sitemanager-30.preview.emergentagent.com', port=443): Max retries exceeded with url: /api/company (Caused by ConnectTimeoutError(&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xf856c537b790&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=15)'))">/root/.venv/lib/python3.11/site-packages/urllib3/connection.py:204: in _new_conn
+    sock = connection.create_connection(
+/root/.venv/lib/python3.11/site-packages/urllib3/util/connection.py:85: in create_connection
+    raise err
+/root/.venv/lib/python3.11/site-packages/urllib3/util/connection.py:73: in create_connection
+    sock.connect(sa)
+E   TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:788: in urlopen
+    response = self._make_request(
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:488: in _make_request
+    raise new_e
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:464: in _make_request
+    self._validate_conn(conn)
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:1106: in _validate_conn
+    conn.connect()
+/root/.venv/lib/python3.11/site-packages/urllib3/connection.py:759: in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/urllib3/connection.py:213: in _new_conn
+    raise ConnectTimeoutError(
+E   urllib3.exceptions.ConnectTimeoutError: (&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xf856c537b790&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=15)')
+
+The above exception was the direct cause of the following exception:
+/root/.venv/lib/python3.11/site-packages/requests/adapters.py:696: in send
+    resp = conn.urlopen(
+/root/.venv/lib/python3.11/site-packages/urllib3/connectionpool.py:842: in urlopen
+    retries = retries.increment(
+/root/.venv/lib/python3.11/site-packages/urllib3/util/retry.py:543: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='sitemanager-30.preview.emergentagent.com', port=443): Max retries exceeded with url: /api/company (Caused by ConnectTimeoutError(&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xf856c537b790&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=15)'))
+
+During handling of the above exception, another exception occurred:
+backend/tests/test_iter3.py:93: in test_update_company_supervisor_forbidden
+    r = requests.put(f"{API}/company", json={"name": "Hack"}, headers=h(supervisor_token), timeout=15)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/api.py:151: in put
+    return request("put", url, data=data, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/api.py:71: in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/sessions.py:651: in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/sessions.py:784: in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/adapters.py:717: in send
+    raise ConnectTimeout(e, request=request)
+E   requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='sitemanager-30.preview.emergentagent.com', port=443): Max retries exceeded with url: /api/company (Caused by ConnectTimeoutError(&lt;HTTPSConnection(host='sitemanager-30.preview.emergentagent.com', port=443) at 0xf856c537b790&gt;, 'Connection to sitemanager-30.preview.emergentagent.com timed out. (connect timeout=15)'))</failure></testcase><testcase classname="backend.tests.test_iter3.TestCompanyUpdate" name="test_update_company_ignores_unknown_fields" time="0.161" /><testcase classname="backend.tests.test_iter3.TestCompanyLogo" name="test_logo_upload_non_image_rejected" time="2.170" /><testcase classname="backend.tests.test_iter3.TestCompanyLogo" name="test_logo_upload_too_big" time="19.753" /><testcase classname="backend.tests.test_iter3.TestCompanyLogo" name="test_logo_upload_vendedor_forbidden" time="0.114" /><testcase classname="backend.tests.test_iter3.TestCompanyLogo" name="test_logo_upload_admin_ok_and_get" time="8.762" /><testcase classname="backend.tests.test_iter3.TestCompanyMultiTenant" name="test_logo_isolation_between_tenants" time="1.158" /></testsuite></testsuites>

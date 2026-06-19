@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import api, { formatApiError } from "../lib/api";
 import PageHeader from "../components/PageHeader";
 import Modal from "../components/Modal";
-import { Plus, Edit, Trash2, Building2, MapPin, Layers, X as XIcon } from "lucide-react";
+import { Plus, Edit, Trash2, Building2, MapPin, Layers, X as XIcon, FileDown, FileSpreadsheet, Download } from "lucide-react";
 import { toast } from "sonner";
 import ProjectAttachments from "../components/ProjectAttachments";
+import { API_BASE } from "../lib/api";
+import { exportProjectPDF, exportProjectExcel, exportProjectsConsolidatedPDF, exportProjectsConsolidatedExcel } from "../lib/reports";
 
 const STATUSES = [
   { v: "planificacion", label: "Planificación", color: "#FFB300" },
@@ -24,15 +26,17 @@ export default function Projects() {
   const [items, setItems] = useState([]);
   const [clients, setClients] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
+  const [company, setCompany] = useState({});
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [filter, setFilter] = useState("all");
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   const load = async () => {
     try {
-      const [p, c] = await Promise.all([api.get("/projects"), api.get("/clients")]);
-      setItems(p.data); setClients(c.data);
+      const [p, c, comp] = await Promise.all([api.get("/projects"), api.get("/clients"), api.get("/company").catch(() => ({ data: {} }))]);
+      setItems(p.data); setClients(c.data); setCompany(comp.data || {});
       try { const u = await api.get("/users"); setSupervisors(u.data.filter(x => x.role === "supervisor")); } catch {}
     } catch (e) { toast.error(formatApiError(e)); }
   };
@@ -78,15 +82,64 @@ export default function Projects() {
   const statusColor = (s) => STATUSES.find(x => x.v === s)?.color || "#52525B";
   const filtered = items.filter(i => filter === "all" || i.status === filter);
 
+  const token = () => localStorage.getItem("crm_token");
+
+  const downloadIndividualPDF = async (p) => {
+    try {
+      const atts = await api.get(`/projects/${p.id}/attachments`).catch(() => ({ data: [] }));
+      await exportProjectPDF({ ...p, attachments: atts.data }, company, API_BASE, token());
+      toast.success("Reporte PDF generado");
+    } catch (e) { toast.error("Error generando PDF"); }
+  };
+
+  const downloadIndividualExcel = (p) => {
+    try { exportProjectExcel(p); toast.success("Excel generado"); }
+    catch (e) { toast.error("Error generando Excel"); }
+  };
+
+  const downloadConsolidatedPDF = async () => {
+    try {
+      await exportProjectsConsolidatedPDF(filtered, company, API_BASE, token());
+      toast.success("Reporte consolidado PDF generado");
+    } catch (e) { toast.error("Error generando PDF"); }
+  };
+
+  const downloadConsolidatedExcel = () => {
+    try { exportProjectsConsolidatedExcel(filtered); toast.success("Excel consolidado generado"); }
+    catch (e) { toast.error("Error generando Excel"); }
+  };
+
   return (
     <div>
       <PageHeader
         title="Obras"
         subtitle="Gestión de Proyectos"
         action={
-          <button data-testid="new-project-btn" onClick={openNew} className="brutal-btn-primary">
-            <Plus className="w-4 h-4" strokeWidth={2.5} /> Nueva Obra
-          </button>
+          <div className="flex items-center gap-2 relative">
+            <div className="relative">
+              <button
+                data-testid="download-consolidated-btn"
+                onClick={() => setDownloadOpen(v => !v)}
+                onBlur={() => setTimeout(() => setDownloadOpen(false), 200)}
+                className="brutal-btn-secondary"
+              >
+                <Download className="w-4 h-4" /> Reporte consolidado
+              </button>
+              {downloadOpen && (
+                <div className="absolute right-0 top-full mt-1 brutal-card bg-white z-20 min-w-[220px]">
+                  <button onMouseDown={downloadConsolidatedPDF} data-testid="consolidated-pdf" className="w-full text-left px-4 py-2 text-sm font-bold uppercase hover:bg-[#FF4500] hover:text-white flex items-center gap-2 border-b-2 border-zinc-200">
+                    <FileDown className="w-4 h-4" /> PDF Consolidado
+                  </button>
+                  <button onMouseDown={downloadConsolidatedExcel} data-testid="consolidated-excel" className="w-full text-left px-4 py-2 text-sm font-bold uppercase hover:bg-[#00C853] hover:text-white flex items-center gap-2">
+                    <FileSpreadsheet className="w-4 h-4" /> Excel Consolidado
+                  </button>
+                </div>
+              )}
+            </div>
+            <button data-testid="new-project-btn" onClick={openNew} className="brutal-btn-primary">
+              <Plus className="w-4 h-4" strokeWidth={2.5} /> Nueva Obra
+            </button>
+          </div>
         }
       />
 
@@ -143,6 +196,8 @@ export default function Projects() {
 
                 <div className="flex gap-2 mt-4">
                   <button onClick={() => openEdit(p)} data-testid={`edit-project-${p.id}`} className="brutal-btn-secondary flex-1"><Edit className="w-3 h-3" /> Editar</button>
+                  <button onClick={() => downloadIndividualPDF(p)} data-testid={`pdf-project-${p.id}`} title="Descargar PDF" className="brutal-btn bg-white hover:bg-[#FF4500] hover:text-white"><FileDown className="w-4 h-4" /></button>
+                  <button onClick={() => downloadIndividualExcel(p)} data-testid={`excel-project-${p.id}`} title="Descargar Excel" className="brutal-btn bg-white hover:bg-[#00C853] hover:text-white"><FileSpreadsheet className="w-4 h-4" /></button>
                   <button onClick={() => remove(p)} data-testid={`delete-project-${p.id}`} className="brutal-btn bg-white text-[#D32F2F] hover:bg-[#D32F2F] hover:text-white"><Trash2 className="w-4 h-4" /></button>
                 </div>
               </div>

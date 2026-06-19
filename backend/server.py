@@ -733,10 +733,34 @@ async def get_company(user=Depends(get_current_user)):
 
 @api_router.put("/company")
 async def update_company(body: dict, user=Depends(require_roles("admin"))):
-    allowed = {k: body[k] for k in ("name",) if k in body}
+    allowed = {k: body[k] for k in ("name", "address", "phone", "email", "rfc") if k in body}
     if allowed:
         await db.companies.update_one({"id": user["company_id"]}, {"$set": allowed})
     return await db.companies.find_one({"id": user["company_id"]}, {"_id": 0})
+
+@api_router.post("/company/logo")
+async def upload_company_logo(file: UploadFile = File(...), user=Depends(require_roles("admin"))):
+    if not (file.content_type or "").startswith("image/"):
+        raise HTTPException(400, "Solo se aceptan imágenes")
+    data = await file.read()
+    if len(data) > 2 * 1024 * 1024:
+        raise HTTPException(413, "Logo demasiado grande (máx 2MB)")
+    ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "png"
+    storage_path = f"{APP_NAME}/{user['company_id']}/logo-{uuid.uuid4()}.{ext}"
+    result = put_object(storage_path, data, file.content_type)
+    await db.companies.update_one(
+        {"id": user["company_id"]},
+        {"$set": {"logo_path": result["path"], "logo_content_type": file.content_type}}
+    )
+    return await db.companies.find_one({"id": user["company_id"]}, {"_id": 0})
+
+@api_router.get("/company/logo")
+async def get_company_logo(user=Depends(get_current_user)):
+    company = await db.companies.find_one({"id": user["company_id"]})
+    if not company or not company.get("logo_path"):
+        raise HTTPException(404, "Sin logo")
+    data, ctype = get_object(company["logo_path"])
+    return StreamingResponse(io.BytesIO(data), media_type=company.get("logo_content_type", ctype))
 
 # ----- STARTUP -----
 @app.on_event("startup")

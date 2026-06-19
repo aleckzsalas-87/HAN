@@ -1,0 +1,39 @@
+{
+  "summary": "Iteration 3 tested: Company info endpoints (GET/PUT /api/company), logo upload (POST /api/company/logo with non-image/oversize/role rejection + GET stream), multi-tenant isolation, and frontend /empresa page (admin-only nav, vendedor/supervisor blocked with 403 page), Projects consolidated + per-project PDF/Excel download buttons. Backend: 12/12 new pytest pass (test_iter3.py). Combined backend regression: 46/47 pass — one transient connect timeout (network glitch on supervisor 403 test, not a real bug; iter3 passes 12/12 in isolation). Frontend: all data-testids verified; logo upload + Excel/PDF downloads triggered without JS errors.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter3.py",
+    "/app/test_reports/pytest/iter3_results.xml",
+    "/app/test_reports/pytest/iter3_full_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py is now ~840 lines; consider splitting routers (company.py, attachments.py, auth.py, crud.py) before it crosses 1000 lines.",
+    "PUT /api/company accepts a raw `dict` instead of a Pydantic model. Functional (allowlist enforced via comprehension) but lacks input validation (e.g., email format, RFC length). Consider a `CompanyUpdateIn` Pydantic model with EmailStr for `email`.",
+    "GET /api/company is now exposed to ALL authenticated users (used to fetch logo URL + company name for reports). This is correct for the new download feature, but note that email/phone/rfc are now visible to vendedor/supervisor — confirm this is intended.",
+    "GET /api/company/logo streams via StreamingResponse but Cache-Control headers aren't set; combined with the `?v=` cache-buster on the frontend it works, but a `Cache-Control: no-store` would be cleaner.",
+    "Frontend AuthImage component in CompanySettings.js fetches the logo via fetch+blob with `Authorization: Bearer ${token}` AND `credentials: include` — works, but the equivalent <img src=...> approach would not (cookie not auto-sent across same-origin streams in some browsers). Pattern is correct.",
+    "Frontend exportProjectPDF/exportProjectsConsolidatedPDF: ensure they swallow logo-fetch failures gracefully so PDF still generates when no logo is uploaded (not tested here — logo upload succeeded in this iteration)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter3.py (new — 12 pytest tests)"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 iter3); full suite 46/47 (1 transient network timeout, not a code bug)",
+    "frontend": "100% — admin /empresa CRUD + logo upload working, role-based nav hiding works, vendedor /empresa direct access correctly returns 403 page, consolidated + per-project Excel/PDF downloads triggered successfully"
+  },
+  "test_credentials": "admin@crm.com/admin123 (admin), vendedor@crm.com/vendedor123, supervisor@crm.com/supervisor123 — all working.",
+  "seed_data_creation": "Created one fresh tenant per test run (TEST_T_<uuid>) via /api/auth/register-company for cross-tenant logo isolation test. Uploaded 1x1 PNG logo (~67 bytes) to demo-company and to each ephemeral tenant — logos persisted in Emergent Object Storage and verified streamable.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run: cd /app && REACT_APP_BACKEND_URL=https://sitemanager-30.preview.emergentagent.com python -m pytest backend/tests/ -v. The full suite has 47 tests across test_crm.py (23), test_iter2.py (12), test_iter3.py (12). For frontend logo upload, the input[type=file] has Tailwind `hidden` class — use playwright's page.set_input_files() (works on hidden inputs) rather than is_visible+click. Excel/PDF downloads are client-side via xlsx.writeFile / jsPDF doc.save — verify via page.expect_download().",
+  "rca of the issue": "N/A — no bugs found this iteration. All 12 new backend tests pass, all frontend flows verified working with correct data-testids and role-gating."
+}

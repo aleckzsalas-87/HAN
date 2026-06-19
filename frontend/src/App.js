@@ -19,6 +19,7 @@ import Requisitions from "./pages/Requisitions";
 import CalendarPage from "./pages/CalendarPage";
 import Reports from "./pages/Reports";
 import Users from "./pages/Users";
+import CompanySettings from "./pages/CompanySettings";
 
 function App() {
   return (
@@ -56,6 +57,14 @@ function App() {
                 element={
                   <ProtectedRoute roles={["admin"]}>
                     <Users />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/empresa"
+                element={
+                  <ProtectedRoute roles={["admin"]}>
+                    <CompanySettings />
                   </ProtectedRoute>
                 }
               />

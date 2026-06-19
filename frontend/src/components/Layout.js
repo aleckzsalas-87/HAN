@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import {
   LayoutDashboard, Users, Building2, FileText, Truck, Package,
   ClipboardList, CalendarDays, BarChart3, UserCog, LogOut, HardHat,
-  Kanban, GanttChartSquare,
+  Kanban, GanttChartSquare, Settings,
 } from "lucide-react";
 
 const NAV = [
@@ -19,6 +19,7 @@ const NAV = [
   { to: "/calendario", label: "Calendario", icon: CalendarDays, roles: ["admin", "vendedor", "supervisor"] },
   { to: "/reportes", label: "Reportes", icon: BarChart3, roles: ["admin", "vendedor", "supervisor"] },
   { to: "/usuarios", label: "Usuarios", icon: UserCog, roles: ["admin"] },
+  { to: "/empresa", label: "Empresa", icon: Settings, roles: ["admin"] },
 ];
 
 const ROLE_BADGE = {
