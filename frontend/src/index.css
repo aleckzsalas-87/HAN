@@ -60,7 +60,7 @@
         @apply bg-white border-2 border-zinc-950 shadow-brutal;
     }
     .brutal-btn {
-        @apply border-2 border-zinc-950 font-bold uppercase tracking-wider transition-all duration-150 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm cursor-pointer disabled:opacity-50;
+        @apply border-2 border-zinc-950 font-bold uppercase tracking-wider transition-all duration-150 inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm cursor-pointer disabled:opacity-50 whitespace-nowrap;
     }
     .brutal-btn-primary {
         @apply brutal-btn bg-[#FF4500] text-white shadow-brutal-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px];
@@ -78,13 +78,19 @@
         background-image: repeating-linear-gradient(45deg, #FFB300 0, #FFB300 10px, #09090B 10px, #09090B 20px);
     }
     .kpi-value {
-        @apply font-mono text-4xl font-bold tracking-tighter text-zinc-950;
+        @apply font-mono text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tighter text-zinc-950;
     }
     .kpi-label {
-        @apply text-xs font-bold uppercase tracking-[0.15em] text-zinc-500;
+        @apply text-[10px] sm:text-xs font-bold uppercase tracking-[0.15em] text-zinc-500;
     }
     .label-mono {
         @apply text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500 font-mono;
+    }
+    .page-pad {
+        @apply p-4 sm:p-6 lg:p-8;
+    }
+    .table-wrap {
+        @apply overflow-x-auto -mx-4 sm:mx-0;
     }
 }
 

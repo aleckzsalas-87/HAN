@@ -76,7 +76,7 @@ export default function CalendarPage() {
       <PageHeader title="Calendario" subtitle="Agenda & Visitas"
         action={<button data-testid="new-event-btn" onClick={() => openNew(new Date())} className="brutal-btn-primary"><Plus className="w-4 h-4" /> Nuevo Evento</button>} />
 
-      <div className="p-8 space-y-4">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4">
         <div className="brutal-card">
           <div className="flex items-center justify-between px-4 py-3 bg-zinc-950 text-white">
             <button onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))} className="hover:text-[#FF4500]"><ChevronLeft /></button>

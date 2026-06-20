@@ -45,8 +45,8 @@ export default function Users() {
       <PageHeader title="Usuarios" subtitle="Gestión de Acceso"
         action={<button data-testid="new-user-btn" onClick={() => setOpen(true)} className="brutal-btn-primary"><Plus className="w-4 h-4" /> Nuevo Usuario</button>} />
 
-      <div className="p-8">
-        <div className="brutal-card overflow-hidden">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="brutal-card overflow-x-auto">
           <table className="w-full">
             <thead className="bg-zinc-950 text-white">
               <tr>

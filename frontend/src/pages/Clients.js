@@ -68,7 +68,7 @@ export default function Clients() {
         }
       />
 
-      <div className="p-8 space-y-4">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4">
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex-1 min-w-[240px] relative">
@@ -101,7 +101,7 @@ export default function Clients() {
         </div>
 
         {/* Table */}
-        <div className="brutal-card overflow-hidden">
+        <div className="brutal-card overflow-x-auto">
           <table className="w-full">
             <thead className="bg-zinc-950 text-white">
               <tr>

@@ -45,7 +45,7 @@ export default function Suppliers() {
       <PageHeader title="Proveedores & Contratistas" subtitle="Directorio"
         action={<button data-testid="new-supplier-btn" onClick={openNew} className="brutal-btn-primary"><Plus className="w-4 h-4" /> Nuevo</button>} />
 
-      <div className="p-8 space-y-4">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4">
         <div className="flex gap-1">
           <button onClick={() => setFilter("all")} className={`brutal-btn ${filter === "all" ? "bg-zinc-950 text-white" : "bg-white"}`}>Todos</button>
           <button onClick={() => setFilter("proveedor")} className={`brutal-btn ${filter === "proveedor" ? "bg-[#FF4500] text-white" : "bg-white"}`}>Proveedores</button>

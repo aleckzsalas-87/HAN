@@ -63,8 +63,8 @@ export default function Gantt() {
   return (
     <div>
       <PageHeader title="Gantt de Obras" subtitle="Cronograma" />
-      <div className="p-8">
-        <div className="brutal-card overflow-hidden">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="brutal-card overflow-x-auto">
           <div className="overflow-x-auto">
             <div style={{ minWidth: "900px" }}>
               {/* Months header */}

@@ -84,8 +84,8 @@ export default function Quotes() {
         action={<button data-testid="new-quote-btn" onClick={openNew} className="brutal-btn-primary"><Plus className="w-4 h-4" /> Nueva Cotización</button>}
       />
 
-      <div className="p-8">
-        <div className="brutal-card overflow-hidden">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="brutal-card overflow-x-auto">
           <table className="w-full">
             <thead className="bg-zinc-950 text-white">
               <tr>

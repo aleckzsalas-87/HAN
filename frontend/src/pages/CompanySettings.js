@@ -51,7 +51,7 @@ export default function CompanySettings() {
   return (
     <div>
       <PageHeader title="Configuración de Empresa" subtitle="Identidad Corporativa" />
-      <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
         {/* LEFT: Logo */}
         <div className="brutal-card p-6">

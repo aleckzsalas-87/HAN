@@ -143,7 +143,7 @@ export default function Projects() {
         }
       />
 
-      <div className="p-8 space-y-4">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4">
         <div className="flex gap-1 flex-wrap">
           <button onClick={() => setFilter("all")} className={`brutal-btn ${filter === "all" ? "bg-zinc-950 text-white" : "bg-white"}`}>Todas ({items.length})</button>
           {STATUSES.map(s => (

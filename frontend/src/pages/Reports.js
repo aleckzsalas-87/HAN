@@ -38,12 +38,12 @@ export default function Reports() {
     return Object.entries(map).sort().map(([month, total]) => ({ month, total }));
   })();
 
-  if (!stats) return <div className="p-8"><div className="brutal-card p-8 font-mono">Cargando...</div></div>;
+  if (!stats) return <div className="p-4 sm:p-6 lg:p-8"><div className="brutal-card p-8 font-mono">Cargando...</div></div>;
 
   return (
     <div>
       <PageHeader title="Reportes & Analítica" subtitle="Inteligencia de Negocio" />
-      <div className="p-8 space-y-6">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6">
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card label="Clientes" value={stats.clients_count} />

@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   LayoutDashboard, Users, Building2, FileText, Truck, Package,
   ClipboardList, CalendarDays, BarChart3, UserCog, LogOut, HardHat,
-  Kanban, GanttChartSquare, Settings,
+  Kanban, GanttChartSquare, Settings, Menu, X,
 } from "lucide-react";
 
 const NAV = [
@@ -31,6 +32,7 @@ const ROLE_BADGE = {
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -39,12 +41,11 @@ export default function Layout() {
 
   const visibleNav = NAV.filter((n) => n.roles.includes(user.role));
 
-  return (
-    <div className="min-h-screen bg-[#F4F4F5] flex">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-zinc-950 text-white border-r-2 border-zinc-950 flex flex-col sticky top-0 h-screen" data-testid="sidebar">
-        <div className="p-5 border-b-2 border-zinc-800 flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#FF4500] flex items-center justify-center border-2 border-white">
+  const SidebarContent = ({ onNav }) => (
+    <>
+      <div className="p-5 border-b-2 border-zinc-800 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#FF4500] flex items-center justify-center border-2 border-white shrink-0">
             <HardHat className="w-6 h-6 text-white" strokeWidth={2.5} />
           </div>
           <div>
@@ -52,48 +53,84 @@ export default function Layout() {
             <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mt-1 font-mono">Command Center</div>
           </div>
         </div>
+        <button onClick={() => setOpen(false)} className="lg:hidden p-1 hover:bg-[#FF4500]" data-testid="close-sidebar">
+          <X className="w-5 h-5" strokeWidth={2.5} />
+        </button>
+      </div>
 
-        <nav className="flex-1 overflow-y-auto py-4">
-          {visibleNav.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              end={n.to === "/"}
-              data-testid={`sidebar-nav-${n.label.toLowerCase()}`}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-5 py-3 text-sm font-bold uppercase tracking-wide transition-all border-l-4 ${
-                  isActive
-                    ? "bg-[#FF4500] text-white border-white"
-                    : "text-zinc-300 border-transparent hover:bg-zinc-900 hover:text-white hover:border-[#FF4500]"
-                }`
-              }
-            >
-              <n.icon className="w-4 h-4" strokeWidth={2.5} />
-              {n.label}
-            </NavLink>
-          ))}
-        </nav>
+      <nav className="flex-1 overflow-y-auto py-4">
+        {visibleNav.map((n) => (
+          <NavLink
+            key={n.to}
+            to={n.to}
+            end={n.to === "/"}
+            onClick={onNav}
+            data-testid={`sidebar-nav-${n.label.toLowerCase()}`}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-5 py-3 text-sm font-bold uppercase tracking-wide transition-all border-l-4 ${
+                isActive
+                  ? "bg-[#FF4500] text-white border-white"
+                  : "text-zinc-300 border-transparent hover:bg-zinc-900 hover:text-white hover:border-[#FF4500]"
+              }`
+            }
+          >
+            <n.icon className="w-4 h-4 shrink-0" strokeWidth={2.5} />
+            {n.label}
+          </NavLink>
+        ))}
+      </nav>
 
-        <div className="border-t-2 border-zinc-800 p-4">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 bg-white text-zinc-950 flex items-center justify-center font-mono font-bold text-sm border-2 border-white">
-              {user.name?.[0]?.toUpperCase() || "U"}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs font-bold truncate">{user.name}</div>
-              <div className={`inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold mt-0.5 ${ROLE_BADGE[user.role]?.color || "bg-zinc-700"}`}>
-                {ROLE_BADGE[user.role]?.label || user.role}
-              </div>
+      <div className="border-t-2 border-zinc-800 p-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-9 h-9 bg-white text-zinc-950 flex items-center justify-center font-mono font-bold text-sm border-2 border-white shrink-0">
+            {user.name?.[0]?.toUpperCase() || "U"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-bold truncate">{user.name}</div>
+            <div className={`inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold mt-0.5 ${ROLE_BADGE[user.role]?.color || "bg-zinc-700"}`}>
+              {ROLE_BADGE[user.role]?.label || user.role}
             </div>
           </div>
-          <button
-            data-testid="logout-button"
-            onClick={handleLogout}
-            className="w-full brutal-btn bg-white text-zinc-950 hover:bg-[#FF4500] hover:text-white"
-          >
-            <LogOut className="w-4 h-4" strokeWidth={2.5} /> Salir
-          </button>
         </div>
+        <button
+          data-testid="logout-button"
+          onClick={handleLogout}
+          className="w-full brutal-btn bg-white text-zinc-950 hover:bg-[#FF4500] hover:text-white"
+        >
+          <LogOut className="w-4 h-4" strokeWidth={2.5} /> Salir
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#F4F4F5] flex flex-col lg:flex-row">
+      {/* MOBILE TOP BAR */}
+      <header className="lg:hidden bg-zinc-950 text-white border-b-2 border-zinc-950 flex items-center justify-between px-4 py-3 sticky top-0 z-30">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-[#FF4500] flex items-center justify-center border-2 border-white">
+            <HardHat className="w-5 h-5 text-white" strokeWidth={2.5} />
+          </div>
+          <div className="font-heading font-black text-base uppercase tracking-tight">ConstruCRM</div>
+        </div>
+        <button onClick={() => setOpen(true)} data-testid="open-sidebar" className="p-1.5 border-2 border-white hover:bg-[#FF4500]">
+          <Menu className="w-5 h-5" strokeWidth={2.5} />
+        </button>
+      </header>
+
+      {/* MOBILE DRAWER OVERLAY */}
+      {open && (
+        <div className="lg:hidden fixed inset-0 z-40 flex" onClick={() => setOpen(false)}>
+          <div className="absolute inset-0 bg-zinc-950/70" />
+          <aside className="relative w-72 max-w-[85vw] bg-zinc-950 text-white flex flex-col h-full overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <SidebarContent onNav={() => setOpen(false)} />
+          </aside>
+        </div>
+      )}
+
+      {/* DESKTOP SIDEBAR */}
+      <aside className="hidden lg:flex w-64 bg-zinc-950 text-white border-r-2 border-zinc-950 flex-col sticky top-0 h-screen shrink-0" data-testid="sidebar">
+        <SidebarContent />
       </aside>
 
       {/* MAIN */}

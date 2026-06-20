@@ -44,7 +44,7 @@ export default function Pipeline() {
   return (
     <div>
       <PageHeader title="Pipeline" subtitle="Vista Kanban" />
-      <div className="p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
           {STAGES.map(s => {
             const stageItems = items.filter(i => i.stage === s.v);

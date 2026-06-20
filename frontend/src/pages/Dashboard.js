@@ -66,7 +66,7 @@ export default function Dashboard() {
 
   if (!stats) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="brutal-card p-8 flex items-center gap-4">
           <div className="w-6 h-6 stripes-bg animate-stripes border-2 border-zinc-950" />
           <span className="font-mono text-sm font-bold uppercase">Cargando datos...</span>
@@ -89,7 +89,7 @@ export default function Dashboard() {
         }
       />
 
-      <div className="p-8 space-y-6">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6">
         {/* KPI Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KPI testid="kpi-clients" label="Clientes Totales" value={stats.clients_count} icon={Users} />

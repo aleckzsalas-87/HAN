@@ -53,7 +53,7 @@ export default function Materials() {
       <PageHeader title="Insumos (Materiales)" subtitle="Inventario"
         action={<button data-testid="new-material-btn" onClick={openNew} className="brutal-btn-primary"><Plus className="w-4 h-4" /> Nuevo Insumo</button>} />
 
-      <div className="p-8 space-y-4">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="brutal-card p-5"><div className="kpi-label">Total Insumos</div><div className="kpi-value">{items.length}</div></div>
           <div className="brutal-card p-5"><div className="kpi-label">Valor Inventario</div><div className="kpi-value">${items.reduce((s, i) => s + (i.stock * i.unit_cost), 0).toLocaleString()}</div></div>
@@ -62,7 +62,7 @@ export default function Materials() {
 
         <input value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar SKU, nombre o categoría..." className="brutal-input" />
 
-        <div className="brutal-card overflow-hidden">
+        <div className="brutal-card overflow-x-auto">
           <table className="w-full">
             <thead className="bg-zinc-950 text-white">
               <tr>
